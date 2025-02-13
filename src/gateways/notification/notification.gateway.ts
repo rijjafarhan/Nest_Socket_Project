@@ -16,7 +16,6 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
-    // No 'data' variable; we assume user registration happens later
     client.broadcast.emit('user-joined', {
       message: `New user joined with client id: ${client.id}`,
     });
@@ -42,13 +41,18 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     this.server.emit('message', message);
   }
 
-  @SubscribeMessage('registerUser') // Corrected event name
+  @SubscribeMessage('registerUser') 
   handleRegister(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     console.log('user:', data);
-    // Register user with the socket ID
-    this.activeUsers.set(data.userId, client.id);  // Use userId field for registration
-    console.log(`User ${data.userId} registered with socket ID: ${client.id}`);
+    if (this.activeUsers.has(data.userId)) {
+      console.log(`User ${data.userId} is already registered with socket ID: ${this.activeUsers.get(data.userId)}`);
+      client.emit('registrationError', { message: 'User is already registered.' });
+    } else {
+      this.activeUsers.set(data.userId, client.id);
+      console.log(`User ${data.userId} registered with socket ID: ${client.id}`);
+    }
   }
+  
 
   @SubscribeMessage('getRegisteredClients')
   getRegisteredClients(@ConnectedSocket() client: Socket) {
