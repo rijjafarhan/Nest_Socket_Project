@@ -34,13 +34,13 @@ $ yarn install
 
 ## Compile and run the project
 
-```bash
+
 # development
 $ yarn run start
 
 
 ## Client Registration
-- The `index.js` file in the browser connects clients to the server. Each client registers itself with a **user ID**.
+- The `index.js` file in the browser connects clients to the server. Each client registers itself with a unique **user ID**.
 - When connected, clients are identified by their **user ID** and **socket ID**.
 
 ## Sending Notifications
