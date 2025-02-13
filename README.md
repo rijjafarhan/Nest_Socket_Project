@@ -51,10 +51,16 @@ $ yarn run start
 
 ### API Endpoints:
 1. **Send Notification to a Client**:
-   - `POST /sendNotification`
+   - `POST /notifications/user`
    - Body: `{ "userId": "user123", "message": "Your custom message" }`
 
 2. **Send Notification to a Group**:
-   - `POST /sendGroupNotification`
+   - `POST /notifications/group`
    - Body: `{ "userIds": ["user123", "user456"], "message": "Your custom message" }`
+  
+3. **Send Notification Globally to all connected clients**:
+   - `POST /notifications/global`
+   - Body: `{ "message": "Your custom message" }`
+
+
 
