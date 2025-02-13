@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Client</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <input type="text" id="userId" placeholder="Enter User ID">
+    <button onclick="registerClient()">Register Client</button>
+   
+
+    <script>
+        // Connect to the WebSocket server
+        const socket = io('http://localhost:30001');
+
+        // Event listener for successful connection
+        socket.on('connect', () => {
+            console.log(`Connected to server with ID: ${socket.id}`);
+        });
+
+        // triggers register user event
+        function registerClient() {
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+            const userData = { userId:  userId}; 
+            socket.emit('registerUser', userData);
+            console.log(`User ${userId} registered`);
+        }
+
+        
+
+        // Listen for incoming notifications
+        socket.on('notification', (data) => {
+            console.log('Received notification:', data);
+            alert(`Notification: ${data.message}`);
+        });
+
+     
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+        });
+    </script>
+</body>
+</html>
