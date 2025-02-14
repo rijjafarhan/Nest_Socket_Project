@@ -1,22 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { NotificationGateway } from '../gateways/notification/notification.gateway';
+import { SingleUserNotificationDto, GlobalNotificationDto, GroupNotificationDto } from '../gateways/notification/dto/notification.dto'
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly notificationGateway: NotificationGateway) {}
+  constructor(private readonly notificationGateway: NotificationGateway) { }
 
-  sendUserNotification(userId: string, message: string) {
-    this.notificationGateway.sendNotification(userId, message);
+  sendUserNotification(singleusernotification: SingleUserNotificationDto) {
+
+    this.notificationGateway.sendNotification(singleusernotification);
   }
 
-  sendGlobalNotification(message: string) {
-    this.notificationGateway.sendBroadcastNotification(message);
+
+  sendGlobalNotification(globalnotification: GlobalNotificationDto) {
+    this.notificationGateway.sendBroadcastNotification(globalnotification);
   }
 
-  sendGroupNotification(userIds: string[], message: string)
-  {
-    this.notificationGateway.sendGroupNotification(userIds, message);
+  sendGroupNotification(groupnotification: GroupNotificationDto) {
+    this.notificationGateway.sendGroupNotification(groupnotification);
   }
 
-  
+
 }

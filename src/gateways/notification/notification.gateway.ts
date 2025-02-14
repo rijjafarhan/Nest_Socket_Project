@@ -8,6 +8,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { GlobalNotificationDto, GroupNotificationDto, SingleUserNotificationDto } from './dto/notification.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -41,7 +42,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     this.server.emit('message', message);
   }
 
-  @SubscribeMessage('registerUser') 
+  @SubscribeMessage('registerUser')
   handleRegister(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     console.log('user:', data);
     if (this.activeUsers.has(data.userId)) {
@@ -52,7 +53,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       console.log(`User ${data.userId} registered with socket ID: ${client.id}`);
     }
   }
-  
+
 
   @SubscribeMessage('getRegisteredClients')
   getRegisteredClients(@ConnectedSocket() client: Socket) {
@@ -67,34 +68,54 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     client.emit('registeredClients', users);
   }
 
-  sendNotification(@MessageBody() userId: string, message: string) {
+  sendNotification(@MessageBody() data: SingleUserNotificationDto) {
+    const { userId, message } = data
     console.log('userId:', userId);
     console.log('message:', message);
 
-    const socketId = this.activeUsers.get(userId);
-    if (socketId) {
-      console.log('Sending notification to:', userId);
-      this.server.to(socketId).emit('notification', { message });
-    } else {
-      console.log(`User ${userId} is not connected.`);
-    }
-  }
-
-  sendBroadcastNotification(message: string) {
-    this.server.emit('notification', { message }); // Send to all connected clients
-  }
-
-  sendGroupNotification(@MessageBody() userIds: string[], message: string) {
-    console.log(userIds);
-
-    userIds.forEach((userId) => {
+    try {
       const socketId = this.activeUsers.get(userId);
       if (socketId) {
+        console.log('Sending notification to:', userId);
         this.server.to(socketId).emit('notification', { message });
-        console.log(`Notification sent to ${userId}`);
       } else {
         console.log(`User ${userId} is not connected.`);
       }
-    });
+    }
+    catch (error) {
+      console.error('Error in sending a notification:', error);
+    }
   }
+
+  sendBroadcastNotification(data: GlobalNotificationDto) {
+
+    try {
+      const { message } = data
+      this.server.emit('notification', { message }); // Send to all connected clients
+    }
+    catch (error) {
+      console.error('Error sending global notification:', error);
+    }
+  }
+
+  sendGroupNotification(@MessageBody() data: GroupNotificationDto) {
+    const { userIds, message } = data
+    console.log(userIds);
+    try {
+      userIds.forEach((userId) => {
+        const socketId = this.activeUsers.get(userId);
+        if (socketId) {
+          this.server.to(socketId).emit('notification', { message });
+          console.log(`Notification sent to ${userId}`);
+        } else {
+          console.log(`User ${userId} is not connected.`);
+        }
+      });
+    }
+    catch (error) {
+      console.error('Error sending group notification:', error);
+    }
+  }
+
+
 }
