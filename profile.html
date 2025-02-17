@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Users - Chat Application</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-6">
+
+  <div class="container max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-semibold text-center mb-4">Users</h2>
+
+    <div class="grid grid-cols-2 gap-6">
+      <!-- Registered Users -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">All Users</h3>
+        <ul id="usersList" class="bg-gray-700 p-4 rounded-md"></ul>
+      </div>
+
+      <!-- Existing Chats & Groups -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Chats & Groups</h3>
+        
+        <div class="mb-4">
+          <h4 class="text-lg font-semibold">User Chats</h4>
+          <ul id="userChatsList" class="bg-gray-700 p-4 rounded-md"></ul>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold">Groups</h4>
+          <ul id="groupsList" class="bg-gray-700 p-4 rounded-md"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function fetchUsers() {
+      try {
+        const response = await fetch("http://localhost:30001/users/getUsers");
+        const users = await response.json();
+        const usersList = document.getElementById("usersList");
+        usersList.innerHTML = "";
+
+        users.forEach(user => {
+          const li = document.createElement("li");
+          li.className = "flex justify-between items-center p-2 border-b border-gray-600";
+
+          li.innerHTML = `
+            <span>${user.name} (${user.email})</span>
+            <button onclick="startChat(${user.id})" class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700">Message</button>
+          `;
+
+          usersList.appendChild(li);
+        });
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    }
+
+    async function fetchChats() {
+      try {
+        const response = await fetch("http://localhost:30001/user/getChats");
+        const chats = await response.json();
+        const userChatsList = document.getElementById("userChatsList");
+        userChatsList.innerHTML = "";
+
+        chats.forEach(chat => {
+          const li = document.createElement("li");
+          li.className = "p-2 border-b border-gray-600";
+          li.innerHTML = `
+            <span>${chat.name}</span>
+            <button onclick="openChat(${chat.id})" class="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700">Open</button>
+          `;
+          userChatsList.appendChild(li);
+        });
+      } catch (error) {
+        console.error("Error fetching chats:", error);
+      }
+    }
+
+    // async function fetchGroups() {
+    //   try {
+    //     const response = await fetch("http://localhost:30001/groups");
+    //     const groups = await response.json();
+    //     const groupsList = document.getElementById("groupsList");
+    //     groupsList.innerHTML = "";
+
+    //     groups.forEach(group => {
+    //       const li = document.createElement("li");
+    //       li.className = "p-2 border-b border-gray-600";
+    //       li.innerHTML = `
+    //         <span>${group.name}</span>
+    //         <button onclick="openChat(${group.id})" class="bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700">Open</button>
+    //       `;
+    //       groupsList.appendChild(li);
+    //     });
+    //   } catch (error) {
+    //     console.error("Error fetching groups:", error);
+    //   }
+    // }
+
+    function startChat(userId) {
+      window.location.href = `chat.html?userId=${userId}`;
+    }
+
+    function openChat(chatId) {
+      window.location.href = `chat.html?chatId=${chatId}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchUsers();
+      fetchChats();
+      //fetchGroups();
+    });
+  </script>
+
+</body>
+</html>
