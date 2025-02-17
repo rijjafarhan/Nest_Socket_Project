@@ -62,7 +62,7 @@ const Profile = () => {
   };
 
   const openChat = (chatId) => {
-    navigate(`/chat/${chatId}`);
+    navigate(`/${chatId}`);
   };
 
   return (

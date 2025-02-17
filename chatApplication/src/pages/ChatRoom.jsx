@@ -28,6 +28,7 @@ const ChatRoom = ({ chatId, userId }) => {
     // Fetch initial chat messages
     const fetchMessages = async () => {
       try {
+        console.log("in fetching msg")
         const response = await fetch(`http://localhost:30001/chats/${chatId}/messages`);
         const data = await response.json();
         setMessages(data);

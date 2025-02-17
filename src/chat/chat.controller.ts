@@ -18,6 +18,7 @@ export class ChatController{
   @Get('/:chatId/messages')
   async getMessages(@Param('chatId') chatId: string) {
     try {
+      console.log("in getting msgs")
       // Validate chatId if necessary
       const chatIdNumber = parseInt(chatId, 10);
       if (isNaN(chatIdNumber)) {
