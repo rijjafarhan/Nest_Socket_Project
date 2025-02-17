@@ -1,7 +1,7 @@
 import { IsBoolean, IsNotEmpty, IsOptional,IsNumber, IsArray, ArrayMinSize, IsString } from "class-validator";
 import { Transform } from "class-transformer";
 export class CreateChatDto {
-  @IsOptional() // Optional for direct chats
+  @IsOptional() 
   @IsString()
   name?: string;
 
@@ -11,12 +11,16 @@ export class CreateChatDto {
   memberIds: number[];
 
   @IsBoolean()
-  @IsOptional() // Auto-determined based on number of users
+  @IsOptional() 
   isGroup?: boolean;
+
+  @IsNotEmpty()
+  @IsNumber()
+  userId: number; 
 }
 
 export class GetChatDto {
     @IsNotEmpty()
     @IsNumber()
-    userId: number; // The user requesting their chats
+    userId: number; 
   }

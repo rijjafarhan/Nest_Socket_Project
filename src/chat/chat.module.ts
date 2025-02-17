@@ -12,4 +12,4 @@ import { ChatGateway } from "./chat.gateway";
     providers:[ChatService, PrismaService,ChatGateway]
 })
 
-export class AuthModule{}
+export class ChatModule{}

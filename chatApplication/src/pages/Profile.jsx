@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import io from "socket.io-client";
 
-// Connect to the backend WebSocket server
 const socket = io("http://localhost:30001");
 
 const Profile = () => {
   const [users, setUsers] = useState([]);
   const [chats, setChats] = useState([]);
-  const [groups, setGroups] = useState([]);
+
+  const [selectedUsers, setSelectedUsers] = useState([]); 
+  const [groupName, setGroupName] = useState(""); 
   const location = useLocation();
   const userId = location.state?.userId;
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ const Profile = () => {
   useEffect(() => {
     fetchUsers();
     fetchChats();
-    // fetchGroups(); // Uncomment if needed later
   }, []);
 
   const fetchUsers = async () => {
@@ -33,21 +33,14 @@ const Profile = () => {
     try {
       const response = await fetch(`http://localhost:30001/user/getChats/${userId}`);
       const data = await response.json();
+      console.log("chats: ", data)
       setChats(data);
     } catch (error) {
       console.error("Error fetching chats:", error);
     }
   };
 
-  const fetchGroups = async () => {
-    try {
-      const response = await fetch("http://localhost:30001/groups");
-      const data = await response.json();
-      setGroups(data);
-    } catch (error) {
-      console.error("Error fetching groups:", error);
-    }
-  };
+
 
   const startChat = (receiverId) => {
     console.log("Creating chat...");
@@ -55,14 +48,42 @@ const Profile = () => {
       "createChat",
       {
         memberIds: [userId, receiverId],
-        isGroup: false, // Private chat
+        isGroup: false,
+        userId
       }
     );
     navigate(`/chat/${receiverId}`, { state: { userId } });
   };
 
-  const openChat = (chatId) => {
-    navigate(`/${chatId}`);
+  const startGroupChat = (isGroup, memberIds, groupName) => {
+    console.log("Creating group chat...");
+    console.log(groupName)
+    const membersWithUserId = [...memberIds, userId]; 
+    if (isGroup && groupName) {
+      socket.emit("createChat", {
+        memberIds:membersWithUserId,
+        isGroup: true,
+
+        name: groupName,
+      });
+
+    } else {
+      alert("Please provide a group name and select members.");
+    }
+  };
+
+  const openChat = (chatId, groupName) => {
+    console.log("group chat: ", groupName)
+    console.log(chatId);
+    navigate(`/${chatId}`, { state: { userId, groupName } });
+  };
+
+  const handleUserSelection = (e, userId) => {
+    if (e.target.checked) {
+      setSelectedUsers((prev) => [...prev, userId]);
+    } else {
+      setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+    }
   };
 
   return (
@@ -73,17 +94,20 @@ const Profile = () => {
           <div>
             <h3 style={styles.subtitle}>All Users</h3>
             <ul style={styles.list}>
-              {users.map((user) => (
-                <li key={user.id} style={styles.listItem}>
-                  <span>{user.name} ({user.email})</span>
-                  <button
-                    onClick={() => startChat(user.id)}
-                    style={styles.button}
-                  >
-                    Message
-                  </button>
-                </li>
-              ))}
+              {users
+                .filter(user => user.id !== userId) // Filter out the user with the same userId
+                .map((user) => (
+                  <li key={user.id} style={styles.listItem}>
+                    <span>{user.name} ({user.email})</span>
+                    <button
+                      onClick={() => startChat(user.id)}
+                      style={styles.button}
+                    >
+                      Message
+                    </button>
+                  </li>
+                ))}
+
             </ul>
           </div>
 
@@ -92,33 +116,77 @@ const Profile = () => {
             <div style={styles.chatSection}>
               <h4 style={styles.chatTitle}>User Chats</h4>
               <ul style={styles.list}>
-                {chats.map((chat) => (
-                  <li key={chat.id} style={styles.listItem}>
-                    <span>{chat.name}</span>
-                    <button
-                      onClick={() => openChat(chat.id)}
-                      style={styles.openButton}
-                    >
-                      Open
-                    </button>
-                  </li>
-                ))}
+                {chats
+                  .filter(chat => !chat.isGroup)
+                  .map((chat) => (
+                    <li key={chat.id} style={styles.listItem}>
+                      <span>{chat.name}</span>
+                      <button
+                        onClick={() => openChat(chat.id)}
+                        style={styles.openButton}
+                      >
+                        Open
+                      </button>
+                    </li>
+                  ))}
+
               </ul>
             </div>
+
+            <div style={styles.chatSection}>
+              <h4 style={styles.chatTitle}>Create Group Chat</h4>
+              <input
+                type="text"
+                placeholder="Enter group name"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                style={styles.input}
+              />
+              <h5 style={styles.subtitle}>Select Users</h5>
+              <ul style={styles.list}>
+                {users
+                  .filter(user => user.id !== userId)
+                  .map((user) => (
+                    <li key={user.id} style={styles.listItem}>
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.includes(user.id)}
+                        onChange={(e) => handleUserSelection(e, user.id)}
+                      />
+                      <span>{user.name} ({user.email})</span>
+                    </li>
+                  ))}
+
+              </ul>
+              <button
+                onClick={() => startGroupChat(true, selectedUsers, groupName)}
+                style={styles.button}
+              >
+                Create Group
+              </button>
+            </div>
+
             <div>
               <h4 style={styles.chatTitle}>Groups</h4>
               <ul style={styles.list}>
-                {groups.map((group) => (
-                  <li key={group.id} style={styles.listItem}>
-                    <span>{group.name}</span>
-                    <button
-                      onClick={() => openChat(group.id)}
-                      style={styles.openButton}
-                    >
-                      Open
-                    </button>
-                  </li>
-                ))}
+                {chats
+                  .filter((chat) => chat.isGroup)
+                  .map((group) => {
+                    console.log(group);
+                    return (
+                      <li key={group.id} style={styles.listItem}>
+                        <span>{group.name}</span>
+                        <button
+                          onClick={() => openChat(group.id, group.name)}
+                          style={styles.openButton}
+                        >
+                          Open
+                        </button>
+                      </li>
+                    );
+                  })}
+
+
               </ul>
             </div>
           </div>
@@ -151,7 +219,7 @@ const styles = {
     fontWeight: "600",
     textAlign: "center",
     marginBottom: "1rem",
-    color:"white"
+    color: "white",
   },
   grid: {
     display: "grid",
@@ -162,6 +230,7 @@ const styles = {
     fontSize: "1.25rem",
     fontWeight: "600",
     marginBottom: "1rem",
+    color: "white",
   },
   list: {
     backgroundColor: "#4a5568",
@@ -176,6 +245,7 @@ const styles = {
     alignItems: "center",
     padding: "0.5rem 0",
     borderBottom: "1px solid #2d3748",
+    color: "white"
   },
   button: {
     backgroundColor: "#3182ce",
@@ -185,8 +255,21 @@ const styles = {
     cursor: "pointer",
     transition: "background-color 0.2s ease",
   },
-  buttonHover: {
-    backgroundColor: "#2b6cb0",
+  input: {
+    backgroundColor: "#4a5568",
+    color: "white",
+    padding: "0.5rem",
+    marginBottom: "1rem",
+    width: "100%",
+    borderRadius: "4px",
+  },
+  openButton: {
+    backgroundColor: "white",
+    color: "black",
+    padding: "0.5rem 1rem",
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "background-color 0.2s ease",
   },
   chatSection: {
     marginBottom: "1.5rem",
@@ -195,14 +278,6 @@ const styles = {
     fontSize: "1.125rem",
     fontWeight: "500",
     marginBottom: "0.75rem",
-  },
-  openButton: {
-    backgroundColor: "#38a169",
-    color: "white",
-    padding: "0.5rem 1rem",
-    borderRadius: "4px",
-    cursor: "pointer",
-    transition: "background-color 0.2s ease",
   },
 };
 

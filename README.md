@@ -28,9 +28,9 @@
 
 ## Project setup
 
-```bash
+
 $ yarn install
-```
+
 
 ## Compile and run the project
 
@@ -38,29 +38,32 @@ $ yarn install
 # development
 $ yarn run start
 
+# Chat Application
 
-## Client Registration
-- The `index.js` file in the browser connects clients to the server. Each client registers itself with a unique **user ID**.
-- When connected, clients are identified by their **user ID** and **socket ID**.
+### Overview
+This is a real-time chat application where users can register, log in, send messages to existing users, and create groups for communication. The app allows users to continue chatting with individual users and in group chats.
 
-## Sending Notifications
-- The server allows sending notifications to individual clients or groups of clients.
-- To send notifications, use the following API endpoints (tested via Postman):
-  - **Send Notification to a Single Client**: Send the **user ID** of the client and the message.
-  - **Send Notification to a Group of Clients**: Send a list of **user IDs** and the message.
+### Features
+- **User Registration and Login:**  
+  Users can register with their credentials and log in to access the application.
 
-### API Endpoints:
-1. **Send Notification to a Client**:
-   - `POST /notifications/user`
-   - Body: `{ "userId": "user123", "message": "Your custom message" }`
+- **Messaging with Users:**  
+  Once logged in, users can send direct messages to other existing users.
 
-2. **Send Notification to a Group**:
-   - `POST /notifications/group`
-   - Body: `{ "userIds": ["user123", "user456"], "message": "Your custom message" }`
-  
-3. **Send Notification Globally to all connected clients**:
-   - `POST /notifications/global`
-   - Body: `{ "message": "Your custom message" }`
+- **Group Chat Creation:**  
+  Users can create groups by selecting members from their contact list and providing a group name.
 
+- **Real-Time Messaging:**  
+  After sending messages, users can continue chatting in real-time, whether it's in direct messages or group chats.
 
+### Current Issues
+There are some minor errors in the implementation that may affect certain features. These issues will be addressed in the future updates.
+
+---
+
+### Frontend Implementation
+
+The frontend of this chat application is implemented in **ReactJS** and is located in the `chatApplication` folder. The app utilizes **Socket.IO** for real-time messaging and **React Router** for managing routes.
+
+---
 

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
@@ -36,146 +38,126 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2 className="login-heading">Login to Your Account</h2>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>Login to Your Account</h2>
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Email</label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className="input-field"
+              style={styles.input}
               placeholder="Enter your email"
             />
           </div>
 
-          <div className="form-group">
-            <label>Password</label>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               required
-              className="input-field"
+              style={styles.input}
               placeholder="Enter your password"
             />
           </div>
 
-          <button type="submit" className="submit-button">
+          <button
+            type="submit"
+            style={styles.button}
+            onMouseOver={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
+            onMouseOut={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
+          >
             Login
           </button>
         </form>
 
-        {/* Signup Redirect */}
-        <p className="signup-redirect">
-          Don't have an account?{" "}
-          <a href="/signup" className="signup-link">Sign Up</a>
+        <p style={styles.redirectLink}>
+          Don't have an account? <a href="/signup" style={styles.loginLink}>Sign Up</a>
         </p>
 
-        {/* Message Display */}
-        {message && <p className="error-message">{message}</p>}
+        {message && <p style={styles.errorMessage}>{message}</p>}
       </div>
-
-      {/* Inline CSS */}
-      <style>
-        {`
-          .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #2d3748;
-          }
-
-          .login-card {
-            width: 100%;
-            max-width: 400px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          }
-
-          .login-heading {
-            text-align: center;
-            font-size: 24px;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 16px;
-          }
-
-          .form-group {
-            margin-bottom: 16px;
-          }
-
-          .form-group label {
-            display: block;
-            font-size: 14px;
-            color: #4a5568;
-          }
-
-          .input-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #2d3748;
-            margin-top: 8px;
-          }
-
-          .input-field:focus {
-            border-color: #63b3ed;
-            outline: none;
-          }
-
-          .submit-button {
-            width: 100%;
-            padding: 12px;
-            background-color: #3182ce;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-          }
-
-          .submit-button:hover {
-            background-color: #2b6cb0;
-          }
-
-          .signup-redirect {
-            text-align: center;
-            font-size: 14px;
-            color: #4a5568;
-            margin-top: 16px;
-          }
-
-          .signup-link {
-            color: #3182ce;
-            text-decoration: none;
-          }
-
-          .signup-link:hover {
-            text-decoration: underline;
-          }
-
-          .error-message {
-            text-align: center;
-            margin-top: 12px;
-            color: #e53e3e;
-          }
-        `}
-      </style>
     </div>
   );
 };
 
 export default LoginPage;
+const styles = {
+  container: {
+    backgroundColor: "#1f2937",
+    color: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    padding: "1.5rem",
+  },
+  card: {
+    backgroundColor: "#2d3748",
+    padding: "2rem",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    width: "100%",
+    maxWidth: "400px",
+  },
+  title: {
+    fontSize: "2rem",
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: "1rem",
+    color:"white"
+  },
+  formGroup: {
+    marginBottom: "15px",
+  },
+  label: {
+    display: "block",
+    fontSize: "14px",
+    color: "#fff",
+    marginBottom: "5px",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    fontSize: "14px",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    backgroundColor: "#3182ce",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    fontSize: "16px",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
+  },
+  buttonHover: {
+    backgroundColor: "#2b6cb0",
+  },
+  redirectLink: {
+    textAlign: "center",
+    fontSize: "14px",
+    color: "#bbb",
+    marginTop: "15px",
+  },
+  loginLink: {
+    color: "#63b3ed",
+    textDecoration: "none",
+  },
+  errorMessage: {
+    color: "red",
+    textAlign: "center",
+    marginTop: "20px",
+  },
+};

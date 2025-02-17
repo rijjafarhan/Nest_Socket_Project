@@ -9,34 +9,35 @@ import { Server, Socket } from 'socket.io';
 import { CreateChatDto } from './dto/chat.dto';
 import { ChatService } from '../chat/chat.service';
 
-@WebSocketGateway({ cors: true }) // Allow frontend connections
+@WebSocketGateway({ cors: true }) 
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
   constructor(private readonly chatService: ChatService) {}
 
-  // Method to create a chat
+ 
   @SubscribeMessage('createChat')
   async handleCreateChat(
     @MessageBody() dto: CreateChatDto,
     @ConnectedSocket() client: Socket
   ) {
     console.log("Creating chat with members:", dto.memberIds);
+    console.log("chat name: ",dto.name)
   
     try {
-      // Ensure the dto contains memberIds
-      if (!dto.memberIds || dto.memberIds.length < 2) {
+      
+      if (!dto.isGroup && (!dto.memberIds || dto.memberIds.length < 2)) {
         client.emit('error', { message: 'A chat must have at least two members.' });
         return;
       }
-
+      console.log(dto.name)
       const newChat = await this.chatService.createChat(dto);
   
-      // Emit a successful chat creation
+     console.log("chat created")
       client.emit('chatCreated', newChat);
   
-      // Notify all members of the new chat
+     
       newChat.members.forEach(member => {
         const room = `user_${member.id}`;
         client.to(room).emit('newChat', newChat);
@@ -48,7 +49,7 @@ export class ChatGateway {
     }
   }
 
-  // Method to handle users joining a chat room
+  
   @SubscribeMessage('joinChat')
   handleJoinChat(
     @MessageBody() chatId: string,

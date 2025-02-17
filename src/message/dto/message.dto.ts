@@ -1,18 +1,46 @@
-import {  IsNotEmpty, IsString } from "class-validator";
-
+import { IsNotEmpty, IsString, IsInt,IsBoolean } from "class-validator";
 
 export class MessageDto {
   @IsNotEmpty()
   @IsString()
-  content:string
+  content: string;
 
   @IsNotEmpty()
-  senderId: number
+  @IsInt()
+  senderId: number;
 
   @IsNotEmpty()
-  receiverId: number
+  @IsInt()
+  receiverId: number;
 
   @IsNotEmpty()
-  chatId:number
+  @IsInt()
+  chatId: number;
 
+  
+  sender?: { connect: { id: number } };
+  reciever?: { connect: { id: number } };
+}
+
+
+
+export class GroupMessageDto {
+  @IsNotEmpty()
+  @IsString()
+  content: string; 
+
+  @IsNotEmpty()
+  @IsInt()
+  senderId: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  chatId: number;
+
+
+  
+  
+ 
+  sender?: { connect: { id: number } }; 
+  group?: { connect: { id: number } }; 
 }

@@ -8,25 +8,21 @@ export class ChatController{
   constructor (private chatService:ChatService){}
    
   @Post("create")
-  @UsePipes(new ValidationPipe({ transform: true })) // Enable automatic transformation
+  @UsePipes(new ValidationPipe({ transform: true })) 
   async createChat(@Body() dto: CreateChatDto) {
-    // Convert string IDs to numbers using ParseIntPipe
+    
     dto.memberIds = dto.memberIds.map(id => Number(id)); 
     return this.chatService.createChat(dto);
   }
 
   @Get('/:chatId/messages')
-  async getMessages(@Param('chatId') chatId: string) {
+  async getMessages(@Param('chatId') chatId: number) {
     try {
-      console.log("in getting msgs")
-      // Validate chatId if necessary
-      const chatIdNumber = parseInt(chatId, 10);
-      if (isNaN(chatIdNumber)) {
+   
+      if (isNaN(chatId) || chatId <= 0) {
         throw new HttpException('Invalid chat ID', HttpStatus.BAD_REQUEST);
       }
-
-      // Fetch messages from the service
-      const messages = await this.chatService.getMessagesByChatId(chatIdNumber);
+      const messages = await this.chatService.getMessagesByChatId(chatId);
       return { success: true, messages };
     } catch (error) {
       console.error('Error fetching messages:', error);

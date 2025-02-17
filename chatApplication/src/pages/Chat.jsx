@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-// Connect to the backend WebSocket server
+
+
 const socket = io("http://localhost:30001");
 
 const ChatPage = () => {
@@ -13,18 +15,20 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [chatId, setChatId] = useState(0);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
-    // Join chat room when component mounts
+
     if (userId && receiverId) {
-      // Create a unique integer chatId based on participants
-      const participants = [userId, receiverId].sort(); // Sort to ensure consistent order
-      const newChatId = participants.reduce((acc, id) => acc * 31 + id, 0); // Generate a unique integer
+
+      const participants = [userId, receiverId].sort();
+      const newChatId = participants.reduce((acc, id) => acc * 31 + id, 0);
       setChatId(newChatId);
       socket.emit("joinChat", newChatId);
     }
 
-    // Listen for incoming messages
+
     socket.on("messageReceived", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
@@ -48,6 +52,7 @@ const ChatPage = () => {
     };
 
     socket.emit("sendMessage", newMessage);
+    navigate(`/${chatId}`, { state: { userId } });
     setInputMessage("");
   };
 

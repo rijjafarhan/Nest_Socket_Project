@@ -39,11 +39,12 @@ model Message {
   senderId Int 
   sender User @relation("Sender",fields: [senderId],references: [id])
 
-  receiverId Int 
-  reciever User @relation("Receiver",fields: [receiverId],references: [id])
+  receiverId Int?
+  reciever User? @relation("Receiver",fields: [receiverId],references: [id])
   
   chatId Int
   chat Chat @relation(fields: [chatId],references: [id])
+  
   timestamp DateTime @default(now())
 }
 

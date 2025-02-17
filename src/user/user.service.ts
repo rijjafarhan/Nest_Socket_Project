@@ -26,14 +26,14 @@ export class UserService {
         where: {
           members: {
             some: {
-              id: userId, // Ensure the field name matches your schema
+              id: userId, 
             },
           },
         },
         include: {
           members: {
             select: {
-              id: true, // Selecting the member's ID
+              id: true, 
               name: true,
               email: true,
             },

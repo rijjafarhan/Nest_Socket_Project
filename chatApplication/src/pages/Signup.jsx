@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -8,7 +10,6 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ const Signup = () => {
 
       if (response.ok) {
         setMessage("Signup successful! Redirecting...");
-        setTimeout(() => navigate("/login"), 2000);
+        setTimeout(() => navigate("/login"), 500);
       } else {
         setMessage(result.message || "Signup failed. Please try again.");
       }
@@ -50,167 +51,106 @@ const Signup = () => {
   };
 
   return (
-    <>
-      <style>
-        {`
-          /* General Layout */
-          /* General Layout */
-.signup-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f0f0f0;
-}
-
-.signup-form {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-.signup-form h2 {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 14px;
-  color: #333;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submit-btn:hover {
-  background-color: #45a049;
-}
-
-.redirect-link {
-  text-align: center;
-  font-size: 14px;
-  color: #555;
-  margin-top: 15px;
-}
-
-.login-link {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.login-link:hover {
-  text-decoration: underline;
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-  margin-top: 20px;
-}
-
-        `}
-      </style>
-
-      <div className="signup-container">
-        <div className="signup-form">
-          <h2>Create an Account</h2>
-
-          {/* Signup Form */}
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Enter your name"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                placeholder="Confirm your password"
-              />
-            </div>
-
-            <button type="submit" className="submit-btn">
-              Sign Up
-            </button>
-          </form>
-
-          {/* Login Redirect */}
-          <p className="redirect-link">
-            Already have an account?{" "}
-            <a href="/login" className="login-link">
-              Login
-            </a>
-          </p>
-
-          {/* Message Display */}
-          {message && <p className="error-message">{message}</p>}
-        </div>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>Create an Account</h2>
+        <form onSubmit={handleSubmit}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Name</label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} required style={styles.input} />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required style={styles.input} />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Password</label>
+            <input type="password" name="password" value={formData.password} onChange={handleChange} required style={styles.input} />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Confirm Password</label>
+            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required style={styles.input} />
+          </div>
+          <button type="submit" style={styles.button}>Sign Up</button>
+        </form>
+        <p style={styles.redirectLink}>
+          Already have an account? <a href="/login" style={styles.loginLink}>Login</a>
+        </p>
+        {message && <p style={styles.errorMessage}>{message}</p>}
       </div>
-    </>
+    </div>
   );
 };
 
 export default Signup;
+const styles = {
+  container: {
+    backgroundColor: "#1f2937",
+    color: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    padding: "1.5rem",
+  },
+  card: {
+    backgroundColor: "#2d3748",
+    padding: "2rem",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    width: "100%",
+    maxWidth: "400px",
+  },
+  title: {
+    fontSize: "2rem",
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: "1rem",
+    color: "white"
+  },
+  formGroup: {
+    marginBottom: "15px",
+  },
+  label: {
+    display: "block",
+    fontSize: "14px",
+    color: "#fff",
+    marginBottom: "5px",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    fontSize: "14px",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    backgroundColor: "#3182ce",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    fontSize: "16px",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
+  },
+  buttonHover: {
+    backgroundColor: "#2b6cb0",
+  },
+  redirectLink: {
+    textAlign: "center",
+    fontSize: "14px",
+    color: "#bbb",
+    marginTop: "15px",
+  },
+  loginLink: {
+    color: "#63b3ed",
+    textDecoration: "none",
+  },
+  errorMessage: {
+    color: "red",
+    textAlign: "center",
+    marginTop: "20px",
+  },
+};
