@@ -57,7 +57,7 @@ This is a real-time chat application where users can register, log in, send mess
   After sending messages, users can continue chatting in real-time, whether it's in direct messages or group chats.
 
 ### Current Issues
-There are some minor errors in the implementation that may affect certain features. These issues will be addressed in the future updates.
+There are some minor errors in the implementation that may affect certain features. 
 
 ---
 
