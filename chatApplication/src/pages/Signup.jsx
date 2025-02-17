@@ -50,86 +50,166 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">
-          Create an Account
-        </h2>
+    <>
+      <style>
+        {`
+          /* General Layout */
+          /* General Layout */
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+}
 
-        {/* Signup Form */}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-600">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-md text-black mt-2"
-              placeholder="Enter your name"
-            />
-          </div>
+.signup-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
 
-          <div className="mb-4">
-            <label className="block text-gray-600">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-md text-black mt-2"
-              placeholder="Enter your email"
-            />
-          </div>
+.signup-form h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
 
-          <div className="mb-4">
-            <label className="block text-gray-600">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-md text-black mt-2"
-              placeholder="Enter your password"
-            />
-          </div>
+.form-group {
+  margin-bottom: 15px;
+}
 
-          <div className="mb-4">
-            <label className="block text-gray-600">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-md text-black mt-2"
-              placeholder="Confirm your password"
-            />
-          </div>
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+}
 
-          <button
-            type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-          >
-            Sign Up
-          </button>
-        </form>
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-top: 5px;
+}
 
-        {/* Login Redirect */}
-        <p className="text-center text-gray-600 mt-4">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline">
-            Login
-          </a>
-        </p>
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-        {/* Message Display */}
-        {message && <p className="text-center mt-4 text-red-600">{message}</p>}
+.submit-btn:hover {
+  background-color: #45a049;
+}
+
+.redirect-link {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-top: 15px;
+}
+
+.login-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
+
+        `}
+      </style>
+
+      <div className="signup-container">
+        <div className="signup-form">
+          <h2>Create an Account</h2>
+
+          {/* Signup Form */}
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                placeholder="Enter your name"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                placeholder="Confirm your password"
+              />
+            </div>
+
+            <button type="submit" className="submit-btn">
+              Sign Up
+            </button>
+          </form>
+
+          {/* Login Redirect */}
+          <p className="redirect-link">
+            Already have an account?{" "}
+            <a href="/login" className="login-link">
+              Login
+            </a>
+          </p>
+
+          {/* Message Display */}
+          {message && <p className="error-message">{message}</p>}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

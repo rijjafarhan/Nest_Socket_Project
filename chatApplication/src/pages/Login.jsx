@@ -22,12 +22,11 @@ const LoginPage = () => {
       });
 
       const result = await response.json();
-      console.log(result)
-     const userId = result.userId;
+      console.log(result);
+      const userId = result.userId;
       if (response.ok) {
         setMessage("Login successful! Redirecting...");
         setTimeout(() => navigate("/profile", { state: { userId } }), 2000);
-
       } else {
         setMessage(result.message || "Invalid credentials. Try again.");
       }
@@ -37,59 +36,144 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">
-          Login to Your Account
-        </h2>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-heading">Login to Your Account</h2>
 
         {/* Login Form */}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-600">Email</label>
+          <div className="form-group">
+            <label>Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full p-3 border rounded-md text-black mt-2"
+              className="input-field"
               placeholder="Enter your email"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-600">Password</label>
+          <div className="form-group">
+            <label>Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full p-3 border rounded-md text-black mt-2"
+              className="input-field"
               placeholder="Enter your password"
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-          >
+          <button type="submit" className="submit-button">
             Login
           </button>
         </form>
 
         {/* Signup Redirect */}
-        <p className="text-center text-gray-600 mt-4">
+        <p className="signup-redirect">
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-600 hover:underline">
-            Sign Up
-          </a>
+          <a href="/signup" className="signup-link">Sign Up</a>
         </p>
 
         {/* Message Display */}
-        {message && <p className="text-center mt-2 text-red-600">{message}</p>}
+        {message && <p className="error-message">{message}</p>}
       </div>
+
+      {/* Inline CSS */}
+      <style>
+        {`
+          .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2d3748;
+          }
+
+          .login-card {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          }
+
+          .login-heading {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+          }
+
+          .form-group {
+            margin-bottom: 16px;
+          }
+
+          .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #4a5568;
+          }
+
+          .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #2d3748;
+            margin-top: 8px;
+          }
+
+          .input-field:focus {
+            border-color: #63b3ed;
+            outline: none;
+          }
+
+          .submit-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3182ce;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+          }
+
+          .submit-button:hover {
+            background-color: #2b6cb0;
+          }
+
+          .signup-redirect {
+            text-align: center;
+            font-size: 14px;
+            color: #4a5568;
+            margin-top: 16px;
+          }
+
+          .signup-link {
+            color: #3182ce;
+            text-decoration: none;
+          }
+
+          .signup-link:hover {
+            text-decoration: underline;
+          }
+
+          .error-message {
+            text-align: center;
+            margin-top: 12px;
+            color: #e53e3e;
+          }
+        `}
+      </style>
     </div>
   );
 };

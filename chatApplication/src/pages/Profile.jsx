@@ -1,23 +1,22 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import io from "socket.io-client";
 
 // Connect to the backend WebSocket server
+const socket = io("http://localhost:30001");
 
 const Profile = () => {
-    const socket = io("http://localhost:30001");
   const [users, setUsers] = useState([]);
   const [chats, setChats] = useState([]);
   const [groups, setGroups] = useState([]);
   const location = useLocation();
   const userId = location.state?.userId;
-  const navigate =useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
     fetchChats();
-   // fetchGroups();
+    // fetchGroups(); // Uncomment if needed later
   }, []);
 
   const fetchUsers = async () => {
@@ -51,42 +50,35 @@ const Profile = () => {
   };
 
   const startChat = (receiverId) => {
-    
-        console.log("in creating chat")
-      // If chat doesn't exist yet, create it first
-      socket.emit(
-        "createChat",
-        {
-          memberIds: [userId, receiverId], // Array of user IDs
-          isGroup: false, // Since it's a private chat
-        }
-    )
-    console.log(receiverId)
-    console.log(userId)
-    navigate(`/chat/${receiverId}`,{ state: { userId } }); 
+    console.log("Creating chat...");
+    socket.emit(
+      "createChat",
+      {
+        memberIds: [userId, receiverId],
+        isGroup: false, // Private chat
+      }
+    );
+    navigate(`/chat/${receiverId}`, { state: { userId } });
   };
 
   const openChat = (chatId) => {
-    navigate(`/${chatId}`)
+    navigate(`/chat/${chatId}`);
   };
 
   return (
-    <div className="bg-gray-900 text-white flex items-center justify-center min-h-screen p-6">
-      <div className="container max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold text-center mb-4">Users</h2>
-        <div className="grid grid-cols-2 gap-6">
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>Users</h2>
+        <div style={styles.grid}>
           <div>
-            <h3 className="text-xl font-semibold mb-2">All Users</h3>
-            <ul className="bg-gray-700 p-4 rounded-md">
+            <h3 style={styles.subtitle}>All Users</h3>
+            <ul style={styles.list}>
               {users.map((user) => (
-                <li
-                  key={user.id}
-                  className="flex justify-between items-center p-2 border-b border-gray-600"
-                >
+                <li key={user.id} style={styles.listItem}>
                   <span>{user.name} ({user.email})</span>
                   <button
                     onClick={() => startChat(user.id)}
-                    className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+                    style={styles.button}
                   >
                     Message
                   </button>
@@ -94,17 +86,18 @@ const Profile = () => {
               ))}
             </ul>
           </div>
+
           <div>
-            <h3 className="text-xl font-semibold mb-2">Chats & Groups</h3>
-            <div className="mb-4">
-              <h4 className="text-lg font-semibold">User Chats</h4>
-              <ul className="bg-gray-700 p-4 rounded-md">
+            <h3 style={styles.subtitle}>Chats & Groups</h3>
+            <div style={styles.chatSection}>
+              <h4 style={styles.chatTitle}>User Chats</h4>
+              <ul style={styles.list}>
                 {chats.map((chat) => (
-                  <li key={chat.id} className="p-2 border-b border-gray-600">
+                  <li key={chat.id} style={styles.listItem}>
                     <span>{chat.name}</span>
                     <button
                       onClick={() => openChat(chat.id)}
-                      className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700"
+                      style={styles.openButton}
                     >
                       Open
                     </button>
@@ -113,14 +106,14 @@ const Profile = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold">Groups</h4>
-              <ul className="bg-gray-700 p-4 rounded-md">
+              <h4 style={styles.chatTitle}>Groups</h4>
+              <ul style={styles.list}>
                 {groups.map((group) => (
-                  <li key={group.id} className="p-2 border-b border-gray-600">
+                  <li key={group.id} style={styles.listItem}>
                     <span>{group.name}</span>
                     <button
                       onClick={() => openChat(group.id)}
-                      className="bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700"
+                      style={styles.openButton}
                     >
                       Open
                     </button>
@@ -133,6 +126,84 @@ const Profile = () => {
       </div>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    backgroundColor: "#1f2937",
+    color: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    padding: "1.5rem",
+  },
+  card: {
+    backgroundColor: "#2d3748",
+    padding: "2rem",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    width: "100%",
+    maxWidth: "900px",
+  },
+  title: {
+    fontSize: "2rem",
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: "1rem",
+    color:"white"
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "1.5rem",
+  },
+  subtitle: {
+    fontSize: "1.25rem",
+    fontWeight: "600",
+    marginBottom: "1rem",
+  },
+  list: {
+    backgroundColor: "#4a5568",
+    padding: "1rem",
+    borderRadius: "8px",
+    listStyleType: "none",
+    margin: 0,
+  },
+  listItem: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "0.5rem 0",
+    borderBottom: "1px solid #2d3748",
+  },
+  button: {
+    backgroundColor: "#3182ce",
+    color: "white",
+    padding: "0.5rem 1rem",
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "background-color 0.2s ease",
+  },
+  buttonHover: {
+    backgroundColor: "#2b6cb0",
+  },
+  chatSection: {
+    marginBottom: "1.5rem",
+  },
+  chatTitle: {
+    fontSize: "1.125rem",
+    fontWeight: "500",
+    marginBottom: "0.75rem",
+  },
+  openButton: {
+    backgroundColor: "#38a169",
+    color: "white",
+    padding: "0.5rem 1rem",
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "background-color 0.2s ease",
+  },
 };
 
 export default Profile;
